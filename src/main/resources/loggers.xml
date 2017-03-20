@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+    <bean id="consoleEventLogger" class="com.epam.spring.core.logger.impl.ConsoleEventLogger"/>
+
+    <bean id="event" class="com.epam.spring.core.domain.Event" scope="prototype">
+        <constructor-arg>
+            <bean class="java.util.Date" scope="prototype"/>
+        </constructor-arg>
+        <constructor-arg ref="dateFormat"/>
+        <property name="msg" value="Something is wrong with 1"/>
+    </bean>
+
+    <bean id="dateFormat" class="java.text.DateFormat" factory-method="getDateTimeInstance"/>
+
+    <bean id="fileEventLogger" class="com.epam.spring.core.logger.impl.FileEventLogger" init-method="init">
+        <constructor-arg value="log.txt"/>
+    </bean>
+
+    <bean id="cachedFileLogger" class="com.epam.spring.core.logger.impl.CacheFileEventLogger" parent="fileEventLogger" destroy-method="destroy">
+        <constructor-arg type="java.lang.Integer" value="5"/>
+    </bean>
+
+    <bean id="dbEventLogger" class="com.epam.spring.core.logger.impl.DBLogger">
+        <constructor-arg ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="combinedEventLogger" class="com.epam.spring.core.logger.impl.CombinedEventLogger">
+        <constructor-arg>
+            <list>
+                <ref bean="consoleEventLogger"/>
+                <ref bean="fileEventLogger"/>
+                <ref bean="dbEventLogger"/>
+            </list>
+        </constructor-arg>
+    </bean>
+</beans>
