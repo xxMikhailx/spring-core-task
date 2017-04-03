@@ -1,9 +1,16 @@
 package com.epam.spring.core.domain;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Random;
 
+@Component
+@Scope("prototype")
 public class Event {
     private long id;
     private String msg;
@@ -11,6 +18,7 @@ public class Event {
     private DateFormat df;
     final private Random random = new Random();
 
+    @Autowired
     public Event(Date date, DateFormat df) {
         this.id = random.nextLong();
         this.date = date;
@@ -37,6 +45,7 @@ public class Event {
         return msg;
     }
 
+    @Value("Something is wrong with 1")
     public void setMsg(String msg) {
         this.msg = msg;
     }

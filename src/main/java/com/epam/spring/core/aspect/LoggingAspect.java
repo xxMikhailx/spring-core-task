@@ -6,6 +6,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 
+import javax.annotation.PostConstruct;
+import java.util.HashMap;
 import java.util.Map;
 
 @Aspect
@@ -13,9 +15,9 @@ public class LoggingAspect {
 
     private Map<Class<?>, Integer> counter;
 
-    public void setCounter(Map<Class<?>, Integer> counter) {
-        this.counter = counter;
-    }
+//    public void setCounter(Map<Class<?>, Integer> counter) {
+//        this.counter = counter;
+//    }
 
     @Pointcut("execution(* com.epam.spring.core.logger.*.logEvent(..))")
     private void allLogEventMethods(){}
@@ -36,6 +38,12 @@ public class LoggingAspect {
         counter.put(clazz, counter.get(clazz)+1);
     }
 
+    @PostConstruct
+    public void init(){
+        counter = new HashMap<Class<?>, Integer>();
+    }
+
+    @PostConstruct
     public void destroy(){
         for (Map.Entry<Class<?>, Integer> entrySet : counter.entrySet()) {
             System.out.println(entrySet.getKey().getSimpleName() + " - " + entrySet.getValue());
