@@ -2,6 +2,9 @@ package com.epam.spring.core.logger.impl;
 
 import com.epam.spring.core.domain.Event;
 import com.epam.spring.core.logger.EventLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -12,23 +15,17 @@ import java.util.List;
 @Component
 public class CombinedEventLogger implements EventLogger {
 
-    @Resource(name = "eventLoggers")
+    @Autowired
+    @Qualifier("eventLoggers")
     private List<EventLogger> loggers;
 
     public CombinedEventLogger() {
-    }
-
-    public CombinedEventLogger(List<EventLogger> loggers) {
-        this.loggers = loggers;
-    }
-
-    @PostConstruct
-    public void init(){
-        loggers = new ArrayList<EventLogger>();
+        System.out.println("CombinedEventLogger created!");
     }
 
     public void logEvent(Event event) {
         for (EventLogger logger : loggers) {
+            System.out.println("Using " + logger.getClass().getSimpleName() + "...");
             logger.logEvent(event);
         }
     }

@@ -34,23 +34,21 @@ public class App {
     }
 
     public static void main(String[] args) {
-//        high coupling
-//        App app = new App();
-//        app.client = new Client("1", "John Smith");
-//        app.eventLogger = new ConsoleEventLogger();
 
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(AppConfig.class, LoggersConfig.class);
-        ctx.scan("com.epam.spring.core");
+        ctx.register(AppConfig.class);
         ctx.refresh();
         App app = (App) ctx.getBean("app");
         for (int i = 0; i < 3; i++) {
-        app.logEvent((Event)ctx.getBean("event"), null);
+            System.out.println("DEFAULT event " + i + "...");
+            app.logEvent((Event)ctx.getBean("event"), null);
         }
         for (int i = 0; i < 3; i++) {
+            System.out.println("INFO event " + i + "...");
             app.logEvent((Event)ctx.getBean("event"), EventType.INFO);
         }
         for (int i = 0; i < 3; i++) {
+            System.out.println("ERROR event " + i + "...");
             app.logEvent((Event)ctx.getBean("event"), EventType.ERROR);
         }
         ctx.close();
@@ -62,6 +60,7 @@ public class App {
         if (logger == null){
             logger = defaultLogger;
         }
+        System.out.println("LoggerType = " + logger.getClass().getSimpleName());
         logger.logEvent(event);
     }
 
